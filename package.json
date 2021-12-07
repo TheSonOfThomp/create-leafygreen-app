@@ -7,5 +7,22 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/gradient-string": "^1.1.2",
+    "@types/node": "^16.11.12",
+    "@types/node-fetch": "^2",
+    "@types/validate-npm-package-name": "^3.0.3",
+    "chalk": "^4.0.0",
+    "commander": "^8.3.0",
+    "create-react-app": "^4.0.3",
+    "gradient-string": "^2.0.0",
+    "node-fetch": "^2.6.6",
+    "ora": "^5.0.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "dependencies": {}
 }
