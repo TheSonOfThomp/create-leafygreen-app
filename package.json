@@ -4,7 +4,9 @@
   "description": "Bootstrap Leafygreen UI components",
   "main": "index.js",
   "scripts": {
+    "build": "tsc src/index.ts",
     "dev": "ts-node src/index.ts",
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

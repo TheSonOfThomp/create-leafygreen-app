@@ -6,7 +6,7 @@ import chalk from 'chalk'
 import gradient from 'gradient-string';
 import packageJson from '../package.json';
 import { checkAppName } from './checkAppName';
-import { exec, execSync, spawn, spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 import fetch from 'node-fetch';
 import peerDependencies from './peerDependencies.json'
 import ignorePackages from './package.ignore.json'
