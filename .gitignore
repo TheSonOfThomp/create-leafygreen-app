@@ -1,1 +1,11 @@
-node_modules/
+.idea/*
+.nyc_output
+build
+tsconfig.tsbuildinfo
+package
+node_modules
+test
+src/**.js
+coverage
+*.log
+package-lock.json

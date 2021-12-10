@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import chalk from 'chalk';
 import validateProjectName from 'validate-npm-package-name';
 
 // From create-react-app
@@ -15,7 +15,7 @@ export function checkAppName(appName: string) {
     [
       ...(validationResult.errors || []),
       ...(validationResult.warnings || []),
-    ].forEach(error => {
+    ].forEach((error) => {
       console.error(chalk.red(`  * ${error}`));
     });
     console.error(chalk.red('\nPlease choose a different project name.'));
@@ -32,7 +32,7 @@ export function checkAppName(appName: string) {
         )} because a dependency with the same name exists.\n` +
           `Due to the way npm works, the following names are not allowed:\n\n`
       ) +
-        chalk.cyan(dependencies.map(depName => `  ${depName}`).join('\n')) +
+        chalk.cyan(dependencies.map((depName) => `  ${depName}`).join('\n')) +
         chalk.red('\n\nPlease choose a different project name.')
     );
     process.exit(1);

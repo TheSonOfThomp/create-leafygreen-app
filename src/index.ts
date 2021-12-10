@@ -1,3 +1,3 @@
-import {init} from './create-leafygreen-app'
-
-init()
+#!/usr/bin/env node
+import { init } from './lib/create-leafygreen-app';
+init();
