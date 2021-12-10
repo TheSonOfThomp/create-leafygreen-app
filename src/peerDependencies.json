@@ -1,0 +1,5 @@
+{
+  "@babel/core": "^7.0.0",
+  "@testing-library/dom": "^7.21.4",
+  "prop-types": "^15.7.2"
+}

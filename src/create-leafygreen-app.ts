@@ -8,6 +8,8 @@ import packageJson from '../package.json';
 import { checkAppName } from './checkAppName';
 import { exec, execSync, spawn, spawnSync } from 'child_process';
 import fetch from 'node-fetch';
+import peerDependencies from './peerDependencies.json'
+import ignorePackages from './package.ignore.json'
 let projectName: string;
 
 const lg = `
@@ -68,7 +70,7 @@ function createApp(name: string){
 
     } else {
       console.error(`\n${chalk.bold('Could not create new app')}`);
-      console.log(`Directory ${chalk.green(appPath)} already exists\n`)
+      console.log(`Folder ${chalk.green(`/${name}`)} already exists\n`)
     }
   } else {
     console.error(`Could not find ${chalk.inverse('create-react-app')}`);
@@ -76,14 +78,18 @@ function createApp(name: string){
 }
 
 function installLeafyGreen(appPath: string) {
-  console.log(chalk.green('Installing Leafygreen dependencies'));
-  const spinner = ora('Fetching Leafygreen dependencies').start()
-  const npmsUrl = "https://api.npms.io/v2/search/?q=scope:leafygreen-ui&size=250"
+  console.log(chalk.green('Installing Leafygreen & peer dependencies'));
+  const spinner = ora('Fetching Leafygreen dependencies').start();
+  const npmsUrl = "https://api.npms.io/v2/search/?q=scope:leafygreen-ui&size=250";
   fetch(npmsUrl)
     .then(data => data.json())
     .then(({results}) => {
       spinner.text = 'Installing Leafygreen packages'
-      const packages = results.map((result: any) => `${result.package.name}@^${result.package.version}`)
+      const lgPackages = results
+        .filter((result: any) => !(ignorePackages as Array<string>).includes(result.package.name))
+        .map((result: any) => `${result.package.name}@^${result.package.version}`)
+      const peerPackages = Object.entries(peerDependencies).map(([pkg, version]) => `${pkg}@${version}`)
+      const packages = [...peerPackages, ...lgPackages]
       const install = spawn(`yarn`, [`add`, ...packages], {cwd: appPath})
 
       install.stdout.on('data', data => {
@@ -105,14 +111,17 @@ function updateAppFiles(appPath: string){
   fs.removeSync(path.resolve(appPath, 'src/App.css'))
   fs.removeSync(path.resolve(appPath, 'src/logo.svg'))
 
-  replaceTemplateFile('App.tsx')
-  replaceTemplateFile('index.tsx')
+  replaceTemplateFile('App.tsx', 'src')
+  replaceTemplateFile('index.tsx', 'src')
+  replaceTemplateFile('favicon.ico', 'public')
+  replaceTemplateFile('logo192.png', 'public')
+  replaceTemplateFile('logo512.png', 'public')
+  replaceTemplateFile('manifest.json', 'public')
 
   finish()
 
-  function replaceTemplateFile(fileName: string) {
-    const contents = fs.readFileSync(path.resolve(__dirname, `templates/${fileName}`), {encoding: 'utf-8'})
-    fs.writeFileSync(path.resolve(appPath, `src/${fileName}`), contents)
+  function replaceTemplateFile(fileName: string, appDirectory: string) {
+    fs.copyFileSync(path.resolve(__dirname, 'templates', fileName), path.resolve(appPath, appDirectory, fileName))
   }
 }
 
