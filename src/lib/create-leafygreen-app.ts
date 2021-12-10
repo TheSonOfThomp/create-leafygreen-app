@@ -55,34 +55,31 @@ export function init() {
 }
 
 function createApp(name: string) {
-  if (fs.existsSync(`./node_modules/.bin/create-react-app/`)) {
-    const appPath = path.resolve(name);
+  const appPath = path.resolve(name);
 
-    if (!fs.existsSync(appPath)) {
-      console.log(`${chalk.blue('Creating React App')}`);
-      const spinner = ora({
-        text: 'Creating React App',
-        stream: process.stdout,
-      }).start();
-      const cra = spawn(`./node_modules/.bin/create-react-app/`, [
-        name,
-        `--template`,
-        `typescript`,
-      ]);
-      cra.stdout.on('data', (data) => {
-        spinner.text = data.toString();
-      });
-      cra.stderr.on('data', logWarning);
-      cra.on('close', () => {
-        spinner.stop();
-        installLeafyGreen(appPath);
-      });
-    } else {
-      console.error(`\n${chalk.bold('Could not create new app')}`);
-      console.log(`Folder ${chalk.green(`/${name}`)} already exists\n`);
-    }
+  if (!fs.existsSync(appPath)) {
+    console.log(`${chalk.blue('Creating React App')}`);
+    const spinner = ora({
+      text: 'Creating React App',
+      stream: process.stdout,
+    }).start();
+    const cra = spawn(`npx`, [
+      'create-react-app',
+      name,
+      `--template`,
+      `typescript`,
+    ]);
+    cra.stdout.on('data', (data) => {
+      spinner.text = data.toString();
+    });
+    cra.stderr.on('data', logWarning);
+    cra.on('close', () => {
+      spinner.stop();
+      installLeafyGreen(appPath);
+    });
   } else {
-    console.error(`Could not find ${chalk.inverse('create-react-app')}`);
+    console.error(`\n${chalk.bold('Could not create new app')}`);
+    console.log(`Folder ${chalk.green(`/${name}`)} already exists\n`);
   }
 }
 
