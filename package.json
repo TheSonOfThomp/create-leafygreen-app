@@ -1,6 +1,6 @@
 {
   "name": "@thesonofthomp/create-leafygreen-app",
-  "version": "1.0.9",
+  "version": "0.0.1",
   "description": "Bootstrap a React app with Leafygreen UI components",
   "main": "index.js",
   "typings": "index.d.ts",
