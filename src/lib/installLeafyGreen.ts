@@ -1,12 +1,13 @@
 /* eslint-disable functional/immutable-data */
-import { spawn } from 'child_process';
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import fs from 'fs';
 
 import chalk from 'chalk';
 import fetch from 'node-fetch';
 import ora from 'ora';
 
 import ignorePackages from './package.ignore.json';
-import peerDependencies from './peerDependencies.json';
+// import peerDependencies from './peerDependencies.json';
 import { logWarning } from './utils';
 
 /**
@@ -34,11 +35,31 @@ export function installLeafyGreen(appPath: string): Promise<boolean> {
         .map(
           (result: any) => `${result.package.name}@^${result.package.version}`
         );
-      const peerPackages = Object.entries(peerDependencies).map(
-        ([pkg, version]) => `${pkg}@${version}`
-      );
-      const packages = [...peerPackages, ...lgPackages];
-      const install = spawn(`yarn`, [`add`, ...packages], { cwd: appPath });
+      // const peerPackages = Object.entries(peerDependencies).map(
+      //   ([pkg, version]) => `${pkg}@${version}`
+      // );
+      const packages = [...lgPackages];
+
+      const packageMgr = readLockFile(appPath)
+      // eslint-disable-next-line functional/no-let
+      let install: ChildProcessWithoutNullStreams;
+
+      switch (packageMgr) {
+        case 'yarn':
+          spinner.text = `Installing using ${packageMgr}`;
+          install = spawn(`yarn`, [`add`, ...packages, `--legacy-peer-deps`], { cwd: appPath });
+        break
+        
+        case 'npm':
+          spinner.text = `Installing using ${packageMgr}`;
+          install = spawn(`npm`, [`install`, ...packages, `--legacy-peer-deps`], { cwd: appPath });
+          break;
+
+        default:
+          spinner.text = 'Could not identify package manageer. Using npm.'
+          install = spawn(`npm`, [`install`, ...packages, `--legacy-peer-deps`], { cwd: appPath });
+          break;
+      }
 
       install.stdout.on('data', (data) => {
         spinner.text = data.toString();
@@ -61,5 +82,15 @@ export function installLeafyGreen(appPath: string): Promise<boolean> {
       reject(err)
     })
   })
+}
 
+function readLockFile(appPath: string): `npm` | `yarn` | undefined {
+
+  if (fs.existsSync(`${appPath}/package-lock.json`)) {
+    return `npm`
+  } else if (fs.existsSync(`${appPath}/yarn.lock`)) {
+    return `yarn`
+  }
+
+  return undefined
 }

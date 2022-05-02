@@ -40,7 +40,7 @@ export function init() {
   }
 
   if (options.packagesOnly) {
-    installLeafyGreen(__dirname)
+    installLeafyGreen(process.cwd())
     .then(() => finish())
   } else {
     if (typeof projectName === 'undefined') {

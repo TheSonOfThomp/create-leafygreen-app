@@ -25,10 +25,12 @@ export function createReactApp(name: string): Promise<boolean> {
         stream: process.stdout,
       }).start();
       const cra = spawn(`npx`, [
-        'create-react-app',
+        'create-react-app@latest',
         name,
         `--template`,
         `typescript`,
+        `--scripts-version`,
+        `4.0.3`
       ]);
       cra.stdout.on('data', (data) => {
         spinner.text = data.toString();
@@ -36,8 +38,7 @@ export function createReactApp(name: string): Promise<boolean> {
       cra.stderr.on('data', logWarning);
       cra.on('close', () => {
         spinner.stop();
-        console.log('Successgully installed');
-        
+
         installLeafyGreen(appPath)
         .then(() => updateReactApp(appPath))
         .then(() => resolve(true))

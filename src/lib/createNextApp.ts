@@ -25,7 +25,7 @@ export function createNextApp(name: string): Promise<boolean> {
         stream: process.stdout,
       }).start();
       const cra = spawn(`npx`, [
-        'create-next-app',
+        'create-next-app@latest',
         name,
         `--ts`
       ]);
