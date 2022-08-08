@@ -32,7 +32,8 @@ function App() {
         <MongoDBLogoMark height={196} className={logoStyle}/>
         <Button
           variant="primary"
-          href="https://mongodb.design"
+          href="https://www.mongodb.design"
+          target="_blank"
           rel="noopener noreferrer"
         >
           Read the Leafygreen Docs
