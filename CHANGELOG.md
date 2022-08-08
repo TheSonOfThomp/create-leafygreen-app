@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.10](https://github.com/TheSonOfThomp/create-leafygreen-app/compare/v0.0.3...v0.0.9) (2022-08-08)
+
 ### [0.0.8](https://github.com/TheSonOfThomp/create-leafygreen-app/compare/v0.0.3...v0.0.8) (2022-05-02)
 
 ### [0.0.6](https://github.com/TheSonOfThomp/create-leafygreen-app/compare/v0.0.3...v0.0.6) (2022-05-02)
