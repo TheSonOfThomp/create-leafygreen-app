@@ -1,14 +1,9 @@
+import { execSync } from 'child_process';
+
 import chalk from 'chalk';
 import { Command } from 'commander';
-import gradient from 'gradient-string';
+import inquirer from 'inquirer';
 
-import { checkAppName } from './checkAppName';
-import { createNextApp } from './createNextApp';
-import { createReactApp } from './createReactApp';
-import { finish } from './finish';
-import { installLeafyGreen } from './installLeafyGreen';
-// eslint-disable-next-line functional/no-let
-let projectName: string;
 
 const lg = `
  _             __                                             _ 
@@ -21,58 +16,38 @@ const lg = `
                   |___/ |___/                                   
 `;
 
-export function init() {
+const deprecationWarning = 
+`\`create-leafygreen-app\` is deprecated. 
+Please create an app using a separate template generator (like \`create-next-app\`), install \`@lg-tools/cli\`, and run \`lg install\` to install the latest LeafyGreen components to the project.
+`
+
+export async function init() {
   const program = new Command(`create-leafygreen-app`)
-    // .version(packageJson.version)
-    .arguments('[project-directory]')
-    .option('--next', 'Build a Next app. Defaults to React app', false)
-    .option('-p, --packages-only', 'Install leafygreen packages only to the current directory', false)
-    .option('-v, --verbose', 'Verbose mode', false)
-    .action((name) => {
-      projectName = name;
-    })
     .parse(process.argv);
 
-  const options = program.opts()
+  program.parse(process.argv);
 
-  if (options.verbose) {
-    console.log(options);
-  }
-
-  if (options.packagesOnly) {
-    installLeafyGreen(process.cwd())
-    .then(() => finish())
-  } else {
-    if (typeof projectName === 'undefined') {
-      console.error('Please specify the project directory:');
-      console.log(
-        `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}`
-      );
-      console.log();
-      console.log('For example:');
-      console.log(
-        `  ${chalk.cyan(program.name())} ${chalk.green('my-react-app')}`
-      );
-      process.exit(1);
+  console.log(chalk.green(lg));
+  console.warn(
+    chalk.yellow(deprecationWarning),
+  );
+  
+  const answer = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'installPackages',
+      message: 'Would you like to install packages using `lg install` in the current directory?',
+      default: true
     }
-  
-    checkAppName(projectName);
-  
-    console.log(gradient('lightgreen', 'green')(lg));
+  ]);
 
-    if (options.next) {
-      createNextApp(projectName)
-      .then(() => {
-        finish()
-      });
-    } else {
-      createReactApp(projectName)
-      .then(() => {
-        finish()
-      });
+  if (answer.installPackages) {
+    console.log(chalk.blue('Running lg install...'));
+    try {
+      execSync('npx @lg-tools/cli install', { stdio: 'inherit' });
+      console.log(chalk.green('Packages installed successfully!'));
+    } catch (error) {
+      console.error(chalk.red('Failed to install packages:'), error);
     }
-  
-    
   }
-
 }
